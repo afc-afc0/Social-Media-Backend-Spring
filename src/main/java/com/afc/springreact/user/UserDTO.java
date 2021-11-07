@@ -1,14 +1,28 @@
 package com.afc.springreact.user;
 
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
 
 @Data
 public class UserDTO {
-    private String username;
-    private String displayName;
-    private String password;
-    private String passwordRepeat;
     
+    @NotNull
+    @Size(min = 4 , max = 100)
+    private String username;
+
+    @NotNull
+    @NotBlank
+    private String displayName;
+    
+    @NotNull
+    @Size(min = 8, max = 100)
+    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
+    private String password;    
     // Lombok handles everything for us
     // public String getUsername() {
     //     return username;
