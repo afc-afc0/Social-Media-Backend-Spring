@@ -2,7 +2,7 @@ package com.afc.springreact.user.service;
 
 import javax.validation.Valid;
 
-import com.afc.springreact.user.UserDTO;
+import com.afc.springreact.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,16 +23,7 @@ public class UserService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
-    public void save(UserDTO userDTO) {
-        User user = new User();
-
-        user.setUsername(userDTO.getUsername());
-        user.setDisplayName(userDTO.getDisplayName());
-        user.setPassword(encoder.encode(userDTO.getPassword()));
-
+    public void save(User user) {
         userRepository.save(user);
-    }
-
-    public void save(@Valid User user) {
     }
 }

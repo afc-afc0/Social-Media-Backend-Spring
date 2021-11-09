@@ -4,7 +4,6 @@ import java.util.*;
 
 import com.afc.springreact.error.ApiError;
 import com.afc.springreact.shared.GenericResponse;
-import com.afc.springreact.user.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class UserController {
     @CrossOrigin  // When we send the request from Frontend because our port is different we cant pass the CORS so we add cross origin
     @PostMapping("/api/1.0/users")   
     @ResponseStatus(HttpStatus.CREATED) // Return 201 Create Response
-    public GenericResponse createUser(@RequestBody @Validated UserDTO userDTO){
+    public GenericResponse createUser(@RequestBody @Validated User userDTO){
         userService.save(userDTO);
         return new GenericResponse("User created succesfully");
     }
