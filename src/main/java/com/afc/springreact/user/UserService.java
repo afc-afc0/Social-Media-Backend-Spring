@@ -1,14 +1,8 @@
-package com.afc.springreact.user.service;
-
-import javax.validation.Valid;
-
-import com.afc.springreact.user.User;
+package com.afc.springreact.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class UserService {
@@ -18,12 +12,13 @@ public class UserService {
     PasswordEncoder encoder;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder encoder){
         this.userRepository = userRepository;        
-        this.encoder = new BCryptPasswordEncoder();
+        this.encoder = encoder;
     }
 
     public void save(User user) {
+        user.setPassword(this.encoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 }

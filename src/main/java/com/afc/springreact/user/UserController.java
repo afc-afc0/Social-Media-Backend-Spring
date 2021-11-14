@@ -7,6 +7,7 @@ import com.afc.springreact.shared.GenericResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,16 +39,23 @@ public class UserController {
         return "Hello World";
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidationException(MethodArgumentNotValidException exception){
-        ApiError error = new ApiError(400, "Validation error", "/api/1.0/users");
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // public ApiError handleValidationException(MethodArgumentNotValidException exception){
+    //     ApiError error = new ApiError(400, "Validation error", "/api/1.0/users");
         
-        Map<String, String> validationErrors = new HashMap<>();
-        for (FieldError fieldError : exception.getBindingResult().getFieldErrors())
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+    //     Map<String, String> validationErrors = new HashMap<>();
+    //     for (FieldError fieldError : exception.getBindingResult().getFieldErrors())
+    //         validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
         
-        error.setValidationErrors(validationErrors);
-        return error;
-    }    
+    //     error.setValidationErrors(validationErrors);
+    //     return error;
+    // }    
+
+    // @ExceptionHandler(BadCredentialsException.class)
+    // @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    // ApiError handleBadCredentialsException(){
+    //     ApiError error = new ApiError(401, "Bad Credentials", "/api/1.0/auth");
+    //     return error;
+    // }
 }
