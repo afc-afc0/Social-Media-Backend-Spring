@@ -18,7 +18,6 @@ public class AuthController {
     @Autowired
     UserRepository userRepository;
         
-    //don't give to much info!!!!
     @PostMapping("/api/1.0/auth")
     ResponseEntity<?> handleAuthentication(@CurrentUser User user) {
         Map<String, String> responseBody = createResponseBody(user);
