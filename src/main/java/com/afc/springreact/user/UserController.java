@@ -1,9 +1,7 @@
 package com.afc.springreact.user;
 
-import java.util.List;
-
 import com.afc.springreact.shared.GenericResponse;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.afc.springreact.user.dto.UserDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +23,7 @@ public class UserController {
 
     @CrossOrigin  
     @PostMapping("/api/1.0/users")   
-    @ResponseStatus(HttpStatus.CREATED) // Return 201 Create Response
+    @ResponseStatus(HttpStatus.CREATED) // Return 201 Created Response
     public GenericResponse createUser(@RequestBody @Validated User userDTO){
         userService.save(userDTO);
         return new GenericResponse("User created succesfully");
@@ -34,9 +31,8 @@ public class UserController {
 
     @CrossOrigin
     @GetMapping("/api/1.0/users")
-    @JsonView(Views.Public.class)
-    Page<User> getUsers(Pageable page) {
-        return userService.getUsers(page);
+    Page<UserDTO> getUsers(Pageable page) {
+        return userService.getUsers(page).map(UserDTO::new);
     }
 
 }

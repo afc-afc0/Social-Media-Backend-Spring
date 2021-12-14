@@ -30,12 +30,10 @@ public class User implements UserDetails{
     @NotNull
     @Size(min = 4 , max = 254)
     @UniqueUsername 
-    @JsonView(Views.Public.class)
     private String username;
 
     @NotNull
     @NotBlank
-    @JsonView(Views.Public.class)
     private String displayName;
     
     @NotNull
@@ -43,7 +41,6 @@ public class User implements UserDetails{
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
     private String password;    
 
-    @JsonView(Views.Public.class)
     private String image;
 
     @Override
