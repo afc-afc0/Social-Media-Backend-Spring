@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,10 +30,12 @@ public class User implements UserDetails{
     @NotNull
     @Size(min = 4 , max = 254)
     @UniqueUsername 
+    @JsonView(Views.Public.class)
     private String username;
 
     @NotNull
     @NotBlank
+    @JsonView(Views.Public.class)
     private String displayName;
     
     @NotNull
@@ -39,6 +43,7 @@ public class User implements UserDetails{
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
     private String password;    
 
+    @JsonView(Views.Public.class)
     private String image;
 
     @Override
