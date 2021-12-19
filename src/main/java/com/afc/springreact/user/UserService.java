@@ -1,5 +1,7 @@
 package com.afc.springreact.user;
 
+import com.afc.springreact.error.NotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,5 +31,13 @@ public class UserService {
             return userRepository.findByUsernameNot(user.getUsername(), page);
         }
         return userRepository.findAll(page); 
+    }
+
+    public User getByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
     }
 }
