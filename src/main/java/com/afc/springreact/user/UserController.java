@@ -1,5 +1,6 @@
 package com.afc.springreact.user;
 
+import com.afc.springreact.shared.CurrentUser;
 import com.afc.springreact.shared.GenericResponse;
 import com.afc.springreact.user.dto.UserDTO;
 
@@ -31,8 +32,8 @@ public class UserController {
 
     @CrossOrigin
     @GetMapping("/api/1.0/users")
-    Page<UserDTO> getUsers(Pageable page) {
-        return userService.getUsers(page).map(UserDTO::new);
+    Page<UserDTO> getUsers(Pageable page, @CurrentUser User user) {
+        return userService.getUsers(page, user).map(UserDTO::new);
     }
 
 }
