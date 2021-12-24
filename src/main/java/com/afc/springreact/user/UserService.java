@@ -1,6 +1,7 @@
 package com.afc.springreact.user;
 
 import com.afc.springreact.error.NotFoundException;
+import com.afc.springreact.user.dto.UserUpdateDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     UserRepository userRepository;
-
     PasswordEncoder encoder;
 
     @Autowired
@@ -39,5 +39,11 @@ public class UserService {
             throw new NotFoundException();
         }
         return user;
+    }
+
+    public User updatedUser(String username, UserUpdateDTO updatedUser) {
+        User inDB = getByUsername(username);
+        inDB.setDisplayName(updatedUser.getDisplayName());
+        return userRepository.save(inDB);
     }
 }
