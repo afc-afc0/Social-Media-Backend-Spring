@@ -1,6 +1,9 @@
 package com.afc.springreact.user;
 
+import java.io.IOException;
+
 import com.afc.springreact.error.NotFoundException;
+import com.afc.springreact.file.FileService;
 import com.afc.springreact.user.dto.UserUpdateDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +16,16 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     UserRepository userRepository;
+    
     PasswordEncoder encoder;
 
+    FileService fileService;
+
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder encoder){
+    public UserService(UserRepository userRepository, PasswordEncoder encoder, FileService fileService){
         this.userRepository = userRepository;        
         this.encoder = encoder;
+        this.fileService = fileService;
     }
 
     public void save(User user) {
@@ -44,6 +51,16 @@ public class UserService {
     public User updatedUser(String username, UserUpdateDTO updatedUser) {
         User inDB = getByUsername(username);
         inDB.setDisplayName(updatedUser.getDisplayName());
+        if(updatedUser.getImage() != null) {
+            try {
+                String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
+                inDB.setImage(storedFileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return userRepository.save(inDB);
     }
+ 
+    
 }
