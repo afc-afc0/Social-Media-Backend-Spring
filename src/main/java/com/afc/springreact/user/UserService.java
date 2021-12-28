@@ -48,19 +48,19 @@ public class UserService {
         return user;
     }
 
-    public User updatedUser(String username, UserUpdateDTO updatedUser) {
+    public User updateUser(String username, UserUpdateDTO updatedUser) {
         User inDB = getByUsername(username);
         inDB.setDisplayName(updatedUser.getDisplayName());
         if(updatedUser.getImage() != null) {
+            String oldImageName = inDB.getImage();
             try {
                 String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
                 inDB.setImage(storedFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            fileService.deleleteFile(oldImageName);
         }
         return userRepository.save(inDB);
-    }
- 
-    
+    }    
 }

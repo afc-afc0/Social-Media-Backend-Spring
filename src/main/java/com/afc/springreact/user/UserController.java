@@ -52,7 +52,7 @@ public class UserController {
     @PutMapping("/users/{username}")
     @PreAuthorize("#username == principal.username")
     UserDTO updateUser(@RequestBody UserUpdateDTO updatedUser, @PathVariable String username) {
-        User user = userService.updatedUser(username, updatedUser);
+        User user = userService.updateUser(username, updatedUser);
         return new UserDTO(user);
     }
     
