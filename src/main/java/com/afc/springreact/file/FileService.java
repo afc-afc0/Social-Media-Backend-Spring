@@ -11,18 +11,20 @@ import java.util.UUID;
 
 import com.afc.springreact.configuration.AppConfiguration;
 
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileService {
     
-    
     AppConfiguration appConfiguration;
+    Tika tika;
 
     @Autowired
     FileService(AppConfiguration appConfiguration) {
         this.appConfiguration = appConfiguration;
+        this.tika = new Tika();
     }
 
     public String writeBase64EncodedStringToFile(String image) throws IOException {
@@ -51,5 +53,10 @@ public class FileService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String detectType(String image) {
+        byte[] base64Encoded = Base64.getDecoder().decode(image);
+        return tika.detect(base64Encoded);
     }
 }

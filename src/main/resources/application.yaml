@@ -34,3 +34,5 @@ spring:
             on-profile: dev
 hoaxify:
     upload-path: storage-dev
+
+

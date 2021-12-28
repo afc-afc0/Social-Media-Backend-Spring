@@ -1,5 +1,7 @@
 package com.afc.springreact.user;
 
+import javax.validation.Valid;
+
 import com.afc.springreact.shared.CurrentUser;
 import com.afc.springreact.shared.GenericResponse;
 import com.afc.springreact.user.dto.UserDTO;
@@ -51,7 +53,7 @@ public class UserController {
     @CrossOrigin
     @PutMapping("/users/{username}")
     @PreAuthorize("#username == principal.username")
-    UserDTO updateUser(@RequestBody UserUpdateDTO updatedUser, @PathVariable String username) {
+    UserDTO updateUser(@Valid @RequestBody UserUpdateDTO updatedUser, @PathVariable String username) {
         User user = userService.updateUser(username, updatedUser);
         return new UserDTO(user);
     }

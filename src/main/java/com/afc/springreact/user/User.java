@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -26,18 +25,18 @@ public class User implements UserDetails{
     @GeneratedValue
     private long id;
 
-    @NotNull
+    @NotNull(message = "{hoaxify.constraint.username.NotNull.message}")
     @Size(min = 4 , max = 254)
     @UniqueUsername 
     private String username;
 
     @NotNull
-    @NotBlank
+    @Size(min = 4 , max = 254)
     private String displayName;
     
     @NotNull
     @Size(min = 8, max = 254)
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")
+    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$", message = "{hoaxify.constraint.username.Pattern.message}")
     private String password;    
 
     @Lob
