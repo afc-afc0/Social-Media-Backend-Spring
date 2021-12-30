@@ -57,5 +57,4 @@ public class UserController {
         User user = userService.updateUser(username, updatedUser);
         return new UserDTO(user);
     }
-    
 }

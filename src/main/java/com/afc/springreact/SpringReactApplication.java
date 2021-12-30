@@ -1,5 +1,7 @@
 package com.afc.springreact;
 
+import com.afc.springreact.post.Post;
+import com.afc.springreact.post.PostService;
 import com.afc.springreact.user.User;
 import com.afc.springreact.user.UserService;
 
@@ -17,7 +19,7 @@ public class SpringReactApplication {
 
 	// @Bean
 	// @Profile("dev")
-	// CommandLineRunner createInitialUsers(UserService userService){
+	// CommandLineRunner createInitialUsers(UserService userService, PostService postService){
 	// 	return  (args) -> {
 	// 		for (int i = 1; i < 10; i++){
 	// 			User user = new User();
@@ -25,6 +27,11 @@ public class SpringReactApplication {
 	// 			user.setDisplayName("display" + i);
 	// 			user.setPassword("Pas4word!");
 	// 			userService.save(user);
+	// 			for (int j = 0; j < 2; j++) {
+	// 				Post post = new Post();
+	// 				post.setContent("Post - " + j + " from user " + i);
+	// 				postService.save(post, user);
+	// 			}
 	// 		}
 	// 	};
 	// }
