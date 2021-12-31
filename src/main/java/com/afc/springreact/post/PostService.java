@@ -17,7 +17,6 @@ public class PostService {
 
     @Autowired
     public PostService(PostRepository postRepository, UserService userService) {
-        super();
         this.postRepository = postRepository;
         this.userService = userService;
     }
@@ -35,6 +34,19 @@ public class PostService {
     public Page<Post> getPostsOfUser(String username, Pageable page) {
         User user = userService.getByUsername(username);
         return postRepository.findByUser(user, page);
+    }
+
+    public Page<Post> getOldPosts(long id, Pageable page) {
+        return postRepository.findByIdLessThan(id, page);
+    }
+
+    public Page<Post> getOldPostsOfUser(long id, String username, Pageable page) {
+        User user = userService.getByUsername(username);
+        return postRepository.findByIdLessThanAndUser(id, user, page);
+    }
+
+    public long getNewPostsCount(long id) {
+        return postRepository.countByIdGreaterThan(id);
     }
     
 }

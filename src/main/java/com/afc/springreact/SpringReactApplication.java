@@ -27,7 +27,7 @@ public class SpringReactApplication {
 	// 			user.setDisplayName("display" + i);
 	// 			user.setPassword("Pas4word!");
 	// 			userService.save(user);
-	// 			for (int j = 0; j < 2; j++) {
+	// 			for (int j = 0; j < 20; j++) {
 	// 				Post post = new Post();
 	// 				post.setContent("Post - " + j + " from user " + i);
 	// 				postService.save(post, user);
