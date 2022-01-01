@@ -1,6 +1,7 @@
 package com.afc.springreact.post;
 
 import java.util.Date;
+import java.util.List;
 
 import com.afc.springreact.user.User;
 import com.afc.springreact.user.UserService;
@@ -8,6 +9,7 @@ import com.afc.springreact.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,6 +49,20 @@ public class PostService {
 
     public long getNewPostsCount(long id) {
         return postRepository.countByIdGreaterThan(id);
+    }
+
+    public long getNewPostsCountOfUser(long id, String username) {
+        User user = userService.getByUsername(username);    
+        return postRepository.countByIdGreaterThanAndUser(id, user);
+    }
+
+    public List<Post> getNewPosts(long id, Sort sort) {
+        return postRepository.findByIdGreaterThan(id, sort);
+    }
+
+    public List<Post> getNewPostsOfUser(long id, String username, Sort sort) {
+        User user = userService.getByUsername(username);
+        return postRepository.findByIdGreaterThanAndUser(id, user, sort);
     }
     
 }

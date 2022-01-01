@@ -1,7 +1,9 @@
 package com.afc.springreact.post;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,8 +50,9 @@ public class PostController {
 
     @GetMapping("/posts/{id:[0-9]+}")
     ResponseEntity<?> getPostsRelative(@PageableDefault(sort = "id", direction = Direction.DESC) Pageable page,
-                                   @PathVariable long id, 
-                                   @RequestParam(name="count", required = false, defaultValue = "false") boolean count) 
+            @PathVariable long id, 
+            @RequestParam(name="count", required = false, defaultValue = "false") boolean count,
+            @RequestParam(name="direction", defaultValue = "before") String direction) 
     {
         if (count) {
             long newPostCount = postService.getNewPostsCount(id);
@@ -59,18 +61,40 @@ public class PostController {
             return ResponseEntity.ok(response);
         }
 
+        if (direction.equals("after")) {
+            List<Post> newPosts = postService.getNewPosts(id, page.getSort());
+            List<PostDTO> newPostsDTO = newPosts.stream().map(PostDTO::new).collect(Collectors.toList());
+            return ResponseEntity.ok(newPostsDTO);
+        }
+
         return ResponseEntity.ok(postService.getOldPosts(id, page).map(PostDTO::new));
     }
 
-    @CrossOrigin
     @GetMapping("/users/{username}/posts")
     Page<PostDTO> getUserPosts(@PathVariable String username , @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page) {
         return postService.getPostsOfUser(username, page).map(PostDTO::new);
     }
 
-    @CrossOrigin
     @GetMapping("/users/{username}/posts/{id:[0-9]+}")
-    Page<PostDTO> getUserPostsRelative(@PathVariable long id, @PathVariable String username , @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page) {
-        return postService.getOldPostsOfUser(id, username, page).map(PostDTO::new);
+    ResponseEntity<?> getUserPostsRelative(@PathVariable long id, 
+            @PathVariable String username , 
+            @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page,
+            @RequestParam(name="count", required = false, defaultValue = "false") boolean count,
+            @RequestParam(name="direction", defaultValue = "before") String direction) 
+    {
+        if (count) {
+            long newPostCount = postService.getNewPostsCountOfUser(id, username);
+            Map<String, Long> response = new HashMap<>();
+            response.put("count", newPostCount);
+            return ResponseEntity.ok(response);
+        }
+
+        if (direction.equals("after")) {
+            List<Post> newPosts = postService.getNewPostsOfUser(id, username, page.getSort());
+            List<PostDTO> newPostsDTO = newPosts.stream().map(PostDTO::new).collect(Collectors.toList());
+            return ResponseEntity.ok(newPostsDTO);
+        }
+
+        return ResponseEntity.ok(postService.getOldPostsOfUser(id, username, page).map(PostDTO::new));
     }
 }
