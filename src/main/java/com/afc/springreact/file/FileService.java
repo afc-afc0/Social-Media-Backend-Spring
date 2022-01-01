@@ -14,6 +14,7 @@ import com.afc.springreact.configuration.AppConfiguration;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileService {
@@ -58,5 +59,20 @@ public class FileService {
     public String detectType(String image) {
         byte[] base64Encoded = Base64.getDecoder().decode(image);
         return tika.detect(base64Encoded);
+    }
+
+    public String savePostAttachments(MultipartFile multipartFile) {
+        String fileName = generateRandonName();
+        File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
+                
+        try {
+            OutputStream outputStream = new FileOutputStream(target);
+            outputStream.write(multipartFile.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileName;
     }
 }
