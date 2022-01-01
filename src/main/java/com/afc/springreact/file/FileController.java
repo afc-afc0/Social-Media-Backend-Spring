@@ -20,8 +20,7 @@ public class FileController {
     }
 
     @PostMapping("/api/1.0/post-attachments")
-    Map<String, String> savePostAttachment(@RequestParam MultipartFile file) {
-        String fileName = fileService.savePostAttachments(file);
-        return Collections.singletonMap("name", fileName);
+    FileAttachment savePostAttachment(@RequestParam MultipartFile file) {
+        return fileService.savePostAttachments(file);
     }
 }
