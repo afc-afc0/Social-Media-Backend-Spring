@@ -48,53 +48,31 @@ public class PostController {
         return postService.getPosts(page).map(PostDTO::new);
     }
 
-    @GetMapping("/posts/{id:[0-9]+}")
+    @GetMapping({"/posts/{id:[0-9]+}", "/users/{username}/posts/{id:[0-9]+}"})
     ResponseEntity<?> getPostsRelative(@PageableDefault(sort = "id", direction = Direction.DESC) Pageable page,
             @PathVariable long id, 
+            @PathVariable(required = false) String username,
             @RequestParam(name="count", required = false, defaultValue = "false") boolean count,
             @RequestParam(name="direction", defaultValue = "before") String direction) 
     {
         if (count) {
-            long newPostCount = postService.getNewPostsCount(id);
+            long newPostCount = postService.getNewPostsCount(id, username);
             Map<String, Long> response = new HashMap<>();
             response.put("count", newPostCount);
             return ResponseEntity.ok(response);
         }
 
         if (direction.equals("after")) {
-            List<Post> newPosts = postService.getNewPosts(id, page.getSort());
+            List<Post> newPosts = postService.getNewPosts(id, username, page.getSort());
             List<PostDTO> newPostsDTO = newPosts.stream().map(PostDTO::new).collect(Collectors.toList());
             return ResponseEntity.ok(newPostsDTO);
         }
 
-        return ResponseEntity.ok(postService.getOldPosts(id, page).map(PostDTO::new));
+        return ResponseEntity.ok(postService.getOldPosts(id, username, page).map(PostDTO::new));
     }
 
     @GetMapping("/users/{username}/posts")
     Page<PostDTO> getUserPosts(@PathVariable String username , @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page) {
         return postService.getPostsOfUser(username, page).map(PostDTO::new);
-    }
-
-    @GetMapping("/users/{username}/posts/{id:[0-9]+}")
-    ResponseEntity<?> getUserPostsRelative(@PathVariable long id, 
-            @PathVariable String username , 
-            @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page,
-            @RequestParam(name="count", required = false, defaultValue = "false") boolean count,
-            @RequestParam(name="direction", defaultValue = "before") String direction) 
-    {
-        if (count) {
-            long newPostCount = postService.getNewPostsCountOfUser(id, username);
-            Map<String, Long> response = new HashMap<>();
-            response.put("count", newPostCount);
-            return ResponseEntity.ok(response);
-        }
-
-        if (direction.equals("after")) {
-            List<Post> newPosts = postService.getNewPostsOfUser(id, username, page.getSort());
-            List<PostDTO> newPostsDTO = newPosts.stream().map(PostDTO::new).collect(Collectors.toList());
-            return ResponseEntity.ok(newPostsDTO);
-        }
-
-        return ResponseEntity.ok(postService.getOldPostsOfUser(id, username, page).map(PostDTO::new));
     }
 }
