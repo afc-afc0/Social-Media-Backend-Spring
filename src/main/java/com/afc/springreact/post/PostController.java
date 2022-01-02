@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.afc.springreact.post.dto.PostDTO;
+import com.afc.springreact.post.dto.PostSubmitDTO;
 import com.afc.springreact.shared.CurrentUser;
 import com.afc.springreact.shared.GenericResponse;
 import com.afc.springreact.user.User;
@@ -38,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    GenericResponse savePost(@Valid @RequestBody Post post, @CurrentUser User user) {
+    GenericResponse savePost(@Valid @RequestBody PostSubmitDTO post, @CurrentUser User user) {
         postService.save(post, user);
         return new GenericResponse("Post saved");
     }

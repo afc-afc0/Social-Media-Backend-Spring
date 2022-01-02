@@ -2,12 +2,17 @@ package com.afc.springreact.post;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Valid;
 
+import com.afc.springreact.file.FileAttachment;
+import com.afc.springreact.file.FileAttachmentRepository;
+import com.afc.springreact.post.dto.PostSubmitDTO;
 import com.afc.springreact.user.User;
 import com.afc.springreact.user.UserService;
 
@@ -22,17 +27,28 @@ import org.springframework.stereotype.Service;
 public class PostService {
     PostRepository postRepository;
     UserService userService;
+    FileAttachmentRepository fileAttachmentRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
+        this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
-    public void save(Post post, User user) {
+    public void save(@Valid PostSubmitDTO postSubmitDTO , User user) {
+        Post post = new Post();
+        post.setContent(postSubmitDTO.getContent());
         post.setTimestamp(new Date());
         post.setUser(user);
         postRepository.save(post);
+        
+        Optional<FileAttachment> optionalFileAttachment = fileAttachmentRepository.findById(postSubmitDTO.getAttachmentId());
+        if (optionalFileAttachment.isPresent()) {
+            FileAttachment fileAttachment = optionalFileAttachment.get();
+            fileAttachment.setPost(post);
+            fileAttachmentRepository.save(fileAttachment);
+        }
     }
 
     public Page<Post> getPosts(Pageable page) {
