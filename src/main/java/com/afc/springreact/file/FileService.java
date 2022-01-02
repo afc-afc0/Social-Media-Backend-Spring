@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class FileService {
 
     public String writeBase64EncodedStringToFile(String image) throws IOException {
         String fileName = generateRandonName();
-        File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
+        File target = new File(appConfiguration.getProfileStoragePath() + "/" + fileName);
         OutputStream outputStream = new FileOutputStream(target);
         
         byte[] base64Encoded = Base64.getDecoder().decode(image);
@@ -53,30 +54,47 @@ public class FileService {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public void deleleteFile(String fileName) {
+    public void deleleteProfileImageFile(String fileName) {
         if (fileName == null) {
             return;
         }
+        deleteFile(Paths.get(appConfiguration.getProfileStoragePath(), fileName));
+    }
+
+    public void deleteAttachmentFile(String fileName) {
+        if (fileName == null) {
+            return;
+        }
+        deleteFile(Paths.get(appConfiguration.getAttachmentStoragePath(), fileName));
+    }
+
+    private void deleteFile(Path path) {
         try {
-            Files.deleteIfExists(Paths.get(appConfiguration.getUploadPath(), fileName));
+            Files.deleteIfExists(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String detectType(String image) {
-        byte[] base64Encoded = Base64.getDecoder().decode(image);
-        return tika.detect(base64Encoded);
+    public String detectType(String base64) {
+        byte[] base64Encoded = Base64.getDecoder().decode(base64);
+        return detectType(base64Encoded);
+    }
+
+    public String detectType(byte[] arr) {
+        return tika.detect(arr);
     }
 
     public FileAttachment savePostAttachments(MultipartFile multipartFile) {
         String fileName = generateRandonName();
-        File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
-                
+        File target = new File(appConfiguration.getAttachmentStoragePath() + "/" + fileName);
+        String fileType = null;        
         try {
+            byte[] arr = multipartFile.getBytes();
             OutputStream outputStream = new FileOutputStream(target);
-            outputStream.write(multipartFile.getBytes());
+            outputStream.write(arr);
             outputStream.close();
+            fileType = detectType(arr);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,6 +102,7 @@ public class FileService {
         FileAttachment attachment = new FileAttachment();
         attachment.setName(fileName);
         attachment.setDate(new Date());
+        attachment.setFileType(fileType);
 
         return fileAttachmentRepository.save(attachment);
     }
@@ -95,8 +114,10 @@ public class FileService {
         List<FileAttachment> filesToDelete =  fileAttachmentRepository.findByDateBeforeAndPostIsNull(date);
 
         for (FileAttachment file : filesToDelete) {
-            deleleteFile(file.getName());
+            deleteAttachmentFile(file.getName());
             fileAttachmentRepository.deleteById(file.getId());
         }
     }
+
+    
 }
