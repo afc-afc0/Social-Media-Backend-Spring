@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,5 +77,12 @@ public class PostController {
     @GetMapping("/users/{username}/posts")
     Page<PostDTO> getUserPosts(@PathVariable String username , @PageableDefault(sort = "id", direction = Direction.DESC) Pageable page) {
         return postService.getPostsOfUser(username, page).map(PostDTO::new);
+    }
+
+    @DeleteMapping("/posts/{id:[0-9]+}")
+    @PreAuthorize("@postSecurity.isAllowedToDelete(#id, #user)")
+    GenericResponse deletePost(@PathVariable long id, @CurrentUser User user) {
+        postService.delete(id);
+        return new GenericResponse("Deleted post = " + id);
     }
 }

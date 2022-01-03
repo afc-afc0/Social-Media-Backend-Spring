@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import com.afc.springreact.file.FileAttachment;
 import com.afc.springreact.file.FileAttachmentRepository;
+import com.afc.springreact.file.FileService;
 import com.afc.springreact.post.dto.PostSubmitDTO;
 import com.afc.springreact.user.User;
 import com.afc.springreact.user.UserService;
@@ -28,11 +29,13 @@ public class PostService {
     PostRepository postRepository;
     UserService userService;
     FileAttachmentRepository fileAttachmentRepository;
+    FileService fileService;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
+    public PostService(FileService fileService, PostRepository postRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
+        this.fileService = fileService;
         this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
@@ -115,5 +118,14 @@ public class PostService {
                 return criteriaBuilder.greaterThan(root.get("id"), id);
             }
         };
+    }
+
+    public void delete(long id) {
+        Post post = postRepository.getById(id);
+        if (post.getFileAttachment() != null) {
+            String fileName = post.getFileAttachment().getName();
+            fileService.deleteAttachmentFile(fileName);
+        }
+        postRepository.deleteById(id);
     }
 }
