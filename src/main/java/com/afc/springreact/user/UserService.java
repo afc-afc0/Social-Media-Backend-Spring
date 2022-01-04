@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.afc.springreact.error.NotFoundException;
 import com.afc.springreact.file.FileService;
+import com.afc.springreact.post.PostService;
 import com.afc.springreact.user.dto.UserUpdateDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,18 @@ public class UserService {
 
     FileService fileService;
 
+    PostService postService;
+
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder encoder, FileService fileService){
         this.userRepository = userRepository;        
         this.encoder = encoder;
         this.fileService = fileService;
+    }
+
+    @Autowired
+    public void setPostService(PostService postService) {
+        this.postService = postService;
     }
 
     public void save(User user) {
@@ -62,5 +70,11 @@ public class UserService {
             fileService.deleleteProfileImageFile(oldImageName);
         }
         return userRepository.save(inDB);
+    }
+
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username);
+        postService.deletePostsOfUser(username);
+        userRepository.delete(user);
     }    
 }

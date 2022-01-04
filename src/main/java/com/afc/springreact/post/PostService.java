@@ -32,11 +32,15 @@ public class PostService {
     FileService fileService;
 
     @Autowired
-    public PostService(FileService fileService, PostRepository postRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
+    public PostService(FileService fileService, PostRepository postRepository, FileAttachmentRepository fileAttachmentRepository) {
         this.postRepository = postRepository;
-        this.userService = userService;
         this.fileService = fileService;
         this.fileAttachmentRepository = fileAttachmentRepository;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     public void save(@Valid PostSubmitDTO postSubmitDTO , User user) {
@@ -90,6 +94,22 @@ public class PostService {
         return postRepository.findAll(spec, sort);
     }  
 
+    public void delete(long id) {
+        Post post = postRepository.getById(id);
+        if (post.getFileAttachment() != null) {
+            String fileName = post.getFileAttachment().getName();
+            fileService.deleteAttachmentFile(fileName);
+        }
+        postRepository.deleteById(id);
+    }
+
+    public void deletePostsOfUser(String username) {
+        User user = userService.getByUsername(username);
+        Specification<Post> userOwnedPosts = userIs(user);
+        List<Post> postToDelete = postRepository.findAll(userOwnedPosts);
+        postRepository.deleteAll(postToDelete);
+    }
+
     Specification<Post> idLessThan(long id) {
         return new Specification<Post>() {
 
@@ -120,12 +140,5 @@ public class PostService {
         };
     }
 
-    public void delete(long id) {
-        Post post = postRepository.getById(id);
-        if (post.getFileAttachment() != null) {
-            String fileName = post.getFileAttachment().getName();
-            fileService.deleteAttachmentFile(fileName);
-        }
-        postRepository.deleteById(id);
-    }
+    
 }
