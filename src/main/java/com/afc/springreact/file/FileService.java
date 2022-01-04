@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.afc.springreact.configuration.AppConfiguration;
+import com.afc.springreact.user.User;
 
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class FileService {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public void deleleteProfileImageFile(String fileName) {
+    public void deleteProfileImageFile(String fileName) {
         if (fileName == null) {
             return;
         }
@@ -116,6 +117,15 @@ public class FileService {
         for (FileAttachment file : filesToDelete) {
             deleteAttachmentFile(file.getName());
             fileAttachmentRepository.deleteById(file.getId());
+        }
+    }
+
+    public void deleteAllStoredFilesForUser(User user) {
+        deleteProfileImageFile(user.getImage());
+        List<FileAttachment> filesToDelete = fileAttachmentRepository.findByPostUser(user);
+
+        for (FileAttachment fileAttachment: filesToDelete) {
+            deleteAttachmentFile(fileAttachment.getName());
         }
     }
 

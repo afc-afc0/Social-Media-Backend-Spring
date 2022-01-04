@@ -2,6 +2,7 @@ package com.afc.springreact.post;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,6 @@ public class Post {
     @ManyToOne
     private User user;
 
-    @OneToOne(mappedBy = "post", orphanRemoval = true)
+    @OneToOne(mappedBy = "post", cascade = CascadeType.REMOVE)
     private FileAttachment fileAttachment;
 }

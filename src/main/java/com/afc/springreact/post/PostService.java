@@ -32,14 +32,10 @@ public class PostService {
     FileService fileService;
 
     @Autowired
-    public PostService(FileService fileService, PostRepository postRepository, FileAttachmentRepository fileAttachmentRepository) {
+    public PostService(UserService userService, FileService fileService, PostRepository postRepository, FileAttachmentRepository fileAttachmentRepository) {
         this.postRepository = postRepository;
         this.fileService = fileService;
         this.fileAttachmentRepository = fileAttachmentRepository;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
@@ -101,13 +97,6 @@ public class PostService {
             fileService.deleteAttachmentFile(fileName);
         }
         postRepository.deleteById(id);
-    }
-
-    public void deletePostsOfUser(String username) {
-        User user = userService.getByUsername(username);
-        Specification<Post> userOwnedPosts = userIs(user);
-        List<Post> postToDelete = postRepository.findAll(userOwnedPosts);
-        postRepository.deleteAll(postToDelete);
     }
 
     Specification<Post> idLessThan(long id) {

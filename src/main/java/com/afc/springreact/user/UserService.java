@@ -22,18 +22,11 @@ public class UserService {
 
     FileService fileService;
 
-    PostService postService;
-
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder encoder, FileService fileService){
         this.userRepository = userRepository;        
         this.encoder = encoder;
         this.fileService = fileService;
-    }
-
-    @Autowired
-    public void setPostService(PostService postService) {
-        this.postService = postService;
     }
 
     public void save(User user) {
@@ -67,14 +60,14 @@ public class UserService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            fileService.deleleteProfileImageFile(oldImageName);
+            fileService.deleteProfileImageFile(oldImageName);
         }
         return userRepository.save(inDB);
     }
 
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);
-        postService.deletePostsOfUser(username);
+        fileService.deleteAllStoredFilesForUser(user);
         userRepository.delete(user);
     }    
 }
