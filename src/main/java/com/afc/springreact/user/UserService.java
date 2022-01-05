@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.afc.springreact.error.NotFoundException;
 import com.afc.springreact.file.FileService;
-import com.afc.springreact.post.PostService;
 import com.afc.springreact.user.dto.UserUpdateDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
