@@ -17,25 +17,25 @@ public class SpringReactApplication {
 		SpringApplication.run(SpringReactApplication.class, args);
 	}
 
-	// @Bean
-	// @Profile("dev")
-	// CommandLineRunner createInitialUsers(UserService userService, PostService postService){
-	// 	return  (args) -> {
-	// 		for (int i = 1; i < 10; i++){
-	// 			User user = new User();
-	// 			user.setUsername("user" + i);
-	// 			user.setDisplayName("display" + i);
-	// 			user.setPassword("Pas4word!");
-	// 			userService.save(user);
-
-	// 			for (int j = 1; j <= 20; j++) {
-	// 				PostSubmitDTO post = new PostSubmitDTO();
-	// 				post.setContent("Post - " + j + " from user " + i);
-	// 				postService.save(post, user);
-	// 			} 
-	// 		}
-	// 	};
-	// }
+//	 @Bean
+//	 @Profile("dev")
+//	 CommandLineRunner createInitialUsers(UserService userService, PostService postService){
+//	 	return  (args) -> {
+//	 		for (int i = 1; i < 10; i++){
+//	 			User user = new User();
+//	 			user.setUsername("user" + i);
+//	 			user.setDisplayName("display" + i);
+//	 			user.setPassword("Pas4word!");
+//	 			userService.save(user);
+//
+//	 			for (int j = 1; j <= 20; j++) {
+//	 				PostSubmitDTO post = new PostSubmitDTO();
+//	 				post.setContent("Post - " + j + " from user " + i);
+//	 				postService.save(post, user);
+//	 			}
+//	 		}
+//	 	};
+//	 }
 }
 
 
