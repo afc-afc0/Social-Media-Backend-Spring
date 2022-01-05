@@ -1,17 +1,4 @@
 spring: 
-    datasource:
-        url: jdbc:h2:./devdb
-        username: fatihbaba98
-        password: 1234
-    jpa:
-        hibernate:
-            ddl-auto: update 
-        properties:
-            javax:
-                persistence:
-                    validation:
-                        mode: none
-
     data: 
       web:
         pageable:
@@ -32,6 +19,18 @@ hoaxify:
     upload-path: storage-production
 ---
 spring:
+    datasource:
+        url: jdbc:h2:./devdb
+        username: fatihbaba98
+        password: 1234
+    jpa:
+        hibernate:
+            ddl-auto: update 
+        properties:
+            javax:
+                persistence:
+                    validation:
+                        mode: none
     config:
         activate:
             on-profile: dev
