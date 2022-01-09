@@ -41,7 +41,7 @@ public class AuthService {
         }
 
         UserDTO userDTO = new UserDTO(user);
-        String token = generateRandonToken(); 
+        String token = generateRandomToken(); 
 
         Token tokenEntity = new Token();
         tokenEntity.setToken(token);
@@ -64,7 +64,7 @@ public class AuthService {
         return optionalToken.get().getUser();
     }
 
-    public String generateRandonToken() {
+    public String generateRandomToken() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
